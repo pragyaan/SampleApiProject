@@ -1,0 +1,15 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "creation of an api",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Pragyaan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2"
+  }
+}
