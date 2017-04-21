@@ -1,31 +1,15 @@
-var express = require('express');
+/**
+ * Created by Dinesh Reddy Maddula on 4/21/2017.
+ */
+var express = require('express'),
+    Controller = require('../controllers/taskController.js');
+var ts = new Controller();
 var router = express.Router();
 
-var subjects = [
-    {id:1,name:'mathematics',code:'m01'},
-    {id:2,name:'physics',code:'p01'},
-    {id:3,name:'chemistry',code:'c01'},
-    {id:4,name:'mathematics',code:'m01'}
-]
-router.get('/',function(req,res) {
-    res.send('hello!');
-    next();
-});
+router.get('/',ts.getAll.bind());
+router.post('/',ts.create.bind());
+router.get('/:id',ts.getById.bind());
+router.put('/:id',ts.update.bind());
+router.delete('/:id',ts.delete.bind());
 
-router.get('/subjects',function(req,res){
-    res.send(subjects);
-    next();
-});
-router.get('/subjects/:id',function(req,res){
-    var uni = req.params.id;
-    var resp ={} ;
-    for(var key in subjects){
-        if(subjects[key].name == uni || subjects[key].id == uni||subjects[key].code == uni){
-            console.log(key);
-            resp.push(subjects[key]);
-            console.log(resp);
-        }
-    }res.send(resp);
-
-})
 module.exports= router;
