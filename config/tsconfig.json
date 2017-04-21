@@ -1,0 +1,13 @@
+{
+  "listen": 8080,
+  "dev": {
+    "api_url": "api.dev.talentscreen.io",
+    "mysql": {
+      "username": "whiteboxqa",
+      "password": "Innovapath1*",
+      "host": "mysql.dev.talentscreen.io",
+      "database": "talentdb",
+      "port": 3306
+    }
+  }
+}
