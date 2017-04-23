@@ -6,68 +6,76 @@
  function Controller(){
 
  }
- Controller.prototype.getAll = function(req,res){
-     tm.findAll(req,res);
-     console.log("Im in controller");
+ Controller.prototype.getAll = function(req,res,next){
+     tm.findAll(req,function(err,data){
+         if(err){
+             console.log(err);
+             return res.json({
+                 error : true
+             })
+         }else{
+             res.status(200).send(data);
+         }
+     });
  };
- // Controller.prototype.getById = function(req,res){
- //     tm.findId.bind();
- // };
- // Controller.prototype.create = function(req,res){
- //  tm.new.bind();
- // };
- // Controller.prototype.update = function(req,res){
- //  tm.change.bind();
- // };
- // Controller.prototype.delete = function(req,res){
- //  tm.remove.bind();
- // };
-// var subjects = [
-//     {id:1,name:'mathematics',code:'m01'},
-//     {id:2,name:'physics',code:'p01'},
-//     {id:3,name:'chemistry',code:'c01'},
-//     {id:4,name:'mathematics',code:'m01'}
-// ];
-//
-// Controller.prototype.getAll = function(req,res){
-//     res.send(subjects);
-// };
-// Controller.prototype.getById = function(req,res){
-//     var uni = req.params.id;
-//     var subArray = [];
-//     for(var key in subjects) {
-//         if (subjects[key].name == uni || subjects[key].id == uni || subjects[key].code == uni) {
-//             subArray.push(subjects[key]);
-//         }
-//     }res.send(subArray);
-// };
-// Controller.prototype.create = function(req,res){
-//     subjects.push(req.body);
-//     return res.json({
-//         message:'success',
-//         error : 'false'
-//     })
-// };
-// Controller.prototype.update = function(req,res){
-//     var uni = req.params.id;
-//     for(var key in subjects) {
-//         if (subjects[key].name == uni || subjects[key].id == uni || subjects[key].code == uni) {
-//             subjects[key].name = req.body.name;
-//             subjects[key].code = req.body.code;
-//         }
-//     }return res.json({
-//         message:'success',
-//         error : 'false'
-//     })
-// };
-// Controller.prototype.delete = function(req,res){
-//     var uni = req.params.id;
-//     for(var key in subjects) {
-//         if (subjects[key].name == uni || subjects[key].id == uni || subjects[key].code == uni) {
-//             delete subjects[key];
-//         }
-//     }
-// };
+ Controller.prototype.getById = function(req,res,next){
+    tm.findId(req,function(err,data){
+        if(err){
+            return res.json({
+                error : true
+            })
+        }else{
+            res.status(200).send(data);
+        }
+    });
+  };
+ Controller.prototype.create = function(req,res,next){
+  tm.new(req.body, function (err, result) {
+      console.log(result);
+      if (err) {
+          console.log(err);
+          return next({status: 500, error: err});
+      }
+      if (result.type === 'update') {
+          res.status(200).json(result.data);
+      } else {
+          if (result.data) {
+              result = result.data;
+          }
+          res.status(201).json(result);
+      }
+  });
+ };
+ Controller.prototype.update = function(req,res,next){
+  tm.change(req,function(err,data){
+      console.log(data);
+      if(err){
+          // return res.json({
+          //     error : true
+          // })
+          console.log(err);
+      }else{
+          res.status(200).send(data);
+      }
+  });
+ };
+ Controller.prototype.delete = function(req,res,next){
+  tm.remove(req,function(err,data){
+      if(err){
+          return res.json({
+              error : true
+          })
+          return next({status: 500, error: err});
+      }else if (data === null || data.affectedRows <= 0) {
+          res.status(404).json({status: 404, message: 'Record Not Found To Delete'});
+      }else {
+          res.status(204).send(JSON.stringify({
+              message: 'resource(s) deleted.'
+          }));
+      }
+  });
+ };
+
 
 module.exports = Controller;
 
