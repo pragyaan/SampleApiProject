@@ -1,15 +1,20 @@
 /**
  * Created by Dinesh Reddy Maddula on 4/21/2017.
  */
+
+//declarations
  var Module = require('../modules/taskModule.js'),
      tm = new Module();
+
+ //controller constructor
  function Controller(){
 
  }
+
+ //get
  Controller.prototype.getAll = function(req,res,next){
      tm.findAll(req,function(err,data){
          if(err){
-             console.log(err);
              return res.json({
                  error : true
              })
@@ -18,8 +23,10 @@
          }
      });
  };
+
+ // get by id
  Controller.prototype.getById = function(req,res,next){
-    tm.findId(req,function(err,data){
+    tm.findId(req.params.id,function(err,data){
         if(err){
             return res.json({
                 error : true
@@ -29,11 +36,15 @@
         }
     });
   };
+
+ // post
  Controller.prototype.create = function(req,res,next){
+     // console.log("controller");
+     // console.log(req.body);
   tm.new(req.body, function (err, result) {
-      console.log(result);
+      // console.log(result);
       if (err) {
-          console.log(err);
+          //console.log(err);
           return next({status: 500, error: err});
       }
       if (result.type === 'update') {
@@ -46,21 +57,25 @@
       }
   });
  };
+
+ // put
  Controller.prototype.update = function(req,res,next){
-  tm.change(req,function(err,data){
-      console.log(data);
+  tm.change(req.params.id,req.body,function(err,data){
+      //console.log(data);
       if(err){
-          // return res.json({
-          //     error : true
-          // })
-          console.log(err);
+          return res.json({
+              error : true
+          })
+         // console.log(err);
       }else{
           res.status(200).send(data);
       }
   });
  };
+
+ // delete
  Controller.prototype.delete = function(req,res,next){
-  tm.remove(req,function(err,data){
+  tm.remove(req.params.id,function(err,data){
       if(err){
           return res.json({
               error : true
