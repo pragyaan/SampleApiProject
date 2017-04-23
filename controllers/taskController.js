@@ -15,8 +15,11 @@
  Controller.prototype.getAll = function(req,res,next){
      tm.findAll(req,function(err,data){
          if(err){
-             return res.json({
-                 error : true
+             return next({status: 500, error: err});
+         }else if(data==null||data==undefined||data=={}) {
+             res.status(404).json({
+                 status:404,
+                 message : "File Not Found"
              })
          }else{
              res.status(200).send(data);
@@ -28,10 +31,13 @@
  Controller.prototype.getById = function(req,res,next){
     tm.findId(req.params.id,function(err,data){
         if(err){
-            return res.json({
-                error : true
+            return next({status: 500, error: err});
+        }else if(data==null||data==undefined||data=={}) {
+            res.status(404).json({
+                status:404,
+                message : "File Not Found"
             })
-        }else{
+        }else {
             res.status(200).send(data);
         }
     });
@@ -39,21 +45,13 @@
 
  // post
  Controller.prototype.create = function(req,res,next){
-     // console.log("controller");
-     // console.log(req.body);
-  tm.new(req.body, function (err, result) {
-      // console.log(result);
+  tm.new(req.body, function (err, data) {
       if (err) {
-          //console.log(err);
           return next({status: 500, error: err});
-      }
-      if (result.type === 'update') {
-          res.status(200).json(result.data);
-      } else {
-          if (result.data) {
-              result = result.data;
-          }
-          res.status(201).json(result);
+      }else if(data==null||data==undefined||data=={}){
+          return next({status:404,message:'Not Created'})
+      }else {
+          res.status(201).json(data);
       }
   });
  };
@@ -63,12 +61,11 @@
   tm.change(req.params.id,req.body,function(err,data){
       //console.log(data);
       if(err){
-          return res.json({
-              error : true
-          })
-         // console.log(err);
+          return next({status:500,error:err})
+      }else if(data==null||data==undefined||data=={}){
+          return next({status:404,message:'Not Updated'})
       }else{
-          res.status(200).send(data);
+          res.status(201).json(data);
       }
   });
  };
@@ -77,16 +74,13 @@
  Controller.prototype.delete = function(req,res,next){
   tm.remove(req.params.id,function(err,data){
       if(err){
-          return res.json({
-              error : true
-          })
           return next({status: 500, error: err});
       }else if (data === null || data.affectedRows <= 0) {
           res.status(404).json({status: 404, message: 'Record Not Found To Delete'});
       }else {
-          res.status(204).send(JSON.stringify({
+          res.status(204).json({
               message: 'resource(s) deleted.'
-          }));
+          });
       }
   });
  };
